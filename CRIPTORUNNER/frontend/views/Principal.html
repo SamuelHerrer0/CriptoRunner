@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CriptoRunner - Criptografia</title>
+  <link rel="stylesheet" href="/views/P.css">
+</head>
+<body>
+  <header>
+    <div class="logo">
+      <h1>CriptoRunner</h1>
+    </div>
+    <div class="user-info" id="userInfo"></div>
+  </header>
+
+  <div class="container">
+    <h2>Criptografar Dados</h2>
+    
+    <form class="form">
+      <div class="form-section">
+        <label for="texto">Texto para criptografar:</label>
+        <textarea id="texto" placeholder="Digite seu texto aqui..."></textarea>
+      </div>
+
+      <div class="form-section">
+    <label for="tipo">Tipo de criptografia:</label>
+    <select id="tipo">
+        <option value="">Selecione um tipo</option>
+        <option value="RSA">RSA</option>
+        <option value="AES">AES</option>
+        <option value="SHA-256">SHA-256</option>
+        <option value="ECC">ECC</option>
+        <option value="Blowfish">Blowfish</option>
+        <option value="MD5">MD5</option>
+        <option value="Twofish">Twofish</option>
+    </select>
+</div>
+
+      <button type="button" id="btnCriptografar">Criptografar</button>
+    </form>
+
+    <div id="authMessage" class="auth-message hidden">
+      <p>Para ver a respota, você precisa logar.</p>
+      <p style="margin-top: 10px; color: #88bbee;">Volte para a tela Home para fazer login ou cadastro.</p>
+      <div class="auth-buttons">
+        <button class="btn-home-action" onclick="window.location.href='/'">Voltar para Home</button>
+      </div>
+    </div>
+
+    <div id="resultado" class="resultado hidden">
+      <strong>Texto criptografado:</strong>
+      <div class="result-content" id="resultContent"></div>
+      
+      <div id="explicacao" class="explicacao-cripto hidden">
+        <strong>Como funciona:</strong>
+        <div class="explicacao-content" id="explicacaoContent"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let usuarioLogado = false;
+    let usuarioAtual = null;
+
+    const userInfo = document.getElementById('userInfo');
+    const authMessage = document.getElementById('authMessage');
+    const resultado = document.getElementById('resultado');
+    const resultContent = document.getElementById('resultContent');
+    const btnCriptografar = document.getElementById('btnCriptografar');
+    const explicacao = document.getElementById('explicacao');
+    const explicacaoContent = document.getElementById('explicacaoContent');
+
+    // Textos explicativos para cada tipo de criptografia
+    const explicacoes = {
+      'AES': 'AES (Advanced Encryption Standard) é uma cifra de bloco simétrica que usa chaves de 128, 192 ou 256 bits. Divide os dados em blocos de 128 bits e aplica múltiplas rodadas de substituição e permutação. É amplamente utilizado para proteger dados sensíveis.',
+      
+      'RSA': 'RSA é um algoritmo de criptografia assimétrica que usa um par de chaves: pública (para criptografar) e privada (para descriptografar). Baseia-se na dificuldade de fatorar números primos grandes. Ideal para troca de chaves e assinaturas digitais.',
+      
+      'SHA-256': 'SHA-256 é uma função hash criptográfica que gera um resumo de 256 bits. É unidirecional - não pode ser revertida. Qualquer pequena mudança no texto original gera um hash completamente diferente. Usado em blockchain e verificação de integridade.',
+      
+      'MD5': 'MD5 gera um hash de 128 bits. Apesar de rápido, é considerado inseguro para aplicações criptográficas devido a vulnerabilidades conhecidas. Ainda é usado para verificação de integridade de arquivos.',
+      
+      'Blowfish': 'Blowfish é uma cifra simétrica que usa chaves de 32 a 448 bits. Divide os dados em blocos de 64 bits e usa uma rede Feistel com 16 rodadas. É conhecido por sua velocidade e segurança.',
+      
+      'Twofish': 'Twofish é a evolução do Blowfish, usando chaves de 128, 192 ou 256 bits e blocos de 128 bits. Foi um dos finalistas do concurso AES. Oferece bom equilíbrio entre segurança e performance.',
+      
+      'DES': 'DES (Data Encryption Standard) usa chaves de 56 bits e blocos de 64 bits. Considerado inseguro hoje em dia devido ao tamanho pequeno da chave. Foi substituído pelo AES.',
+      
+      'TripleDES': 'Triple DES aplica o algoritmo DES três vezes com chaves diferentes, aumentando a segurança. Usa chaves efetivas de 112 ou 168 bits. Mais seguro que DES mas mais lento que AES.',
+      
+      'ChaCha20': 'ChaCha20 é uma cifra de fluxo moderna que funciona bem em dispositivos móveis. Gera um fluxo de keystream que é combinado com o texto via XOR. Conhecida por sua velocidade e segurança.',
+      
+      'Base64': 'Base64 não é criptografia, mas uma codificação que converte dados binários em texto ASCII. Usa 64 caracteres para representar dados. Útil para transmitir dados binários por canais de texto.'
+    };
+
+    function verificarLogin() {
+      const usuarioSalvo = localStorage.getItem('usuarioCriptoRunner');
+      
+      if (usuarioSalvo) {
+        usuarioLogado = true;
+        usuarioAtual = JSON.parse(usuarioSalvo);
+        atualizarInterfaceUsuario();
+      } else {
+        usuarioLogado = false;
+        usuarioAtual = null;
+        atualizarInterfaceUsuario();
+      }
+    }
+
+    function atualizarInterfaceUsuario() {
+      if (usuarioLogado && usuarioAtual) {
+        const avatarImage = localStorage.getItem(`avatarImage_${usuarioAtual.id}`);
+        const avatarHTML = avatarImage 
+          ? `<img src="${avatarImage}" alt="Avatar">` 
+          : usuarioAtual.nome.charAt(0).toUpperCase();
+        
+        userInfo.innerHTML = `
+          <div class="user-avatar" onclick="document.getElementById('avatarInput').click()">${avatarHTML}</div>
+          <div class="user-details">
+            <span class="user-name">${usuarioAtual.nome}</span>
+            <button class="user-logout" onclick="sair()">Sair</button>
+          </div>
+          <input type="file" id="avatarInput" accept="image/*" onchange="mudarAvatar(event)">
+        `;
+        authMessage.classList.add('hidden');
+      } else {
+        userInfo.innerHTML = '';
+        authMessage.classList.remove('hidden');
+        resultado.classList.add('hidden');
+      }
+    }
+
+    function mudarAvatar(event) {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const imageData = e.target.result;
+          localStorage.setItem(`avatarImage_${usuarioAtual.id}`, imageData);
+          atualizarInterfaceUsuario();
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    function sair() {
+      localStorage.removeItem('usuarioCriptoRunner');
+      usuarioLogado = false;
+      usuarioAtual = null;
+      atualizarInterfaceUsuario();
+      
+      const mensagem = document.createElement('div');
+      mensagem.className = 'success-message';
+      mensagem.textContent = 'Logout realizado com sucesso!';
+      document.querySelector('.form').prepend(mensagem);
+      
+      setTimeout(() => {
+        mensagem.remove();
+      }, 3000);
+    }
+
+    function criptografar() {
+      if (!usuarioLogado) {
+        authMessage.classList.remove('hidden');
+        return;
+      }
+      
+      const texto = document.getElementById('texto').value.trim();
+      const tipo = document.getElementById('tipo').value;
+      
+      if (!texto || !tipo) {
+        resultContent.innerHTML = '<div class="error-message">Preencha o texto e selecione o tipo de criptografia.</div>';
+        resultado.classList.remove('hidden');
+        return;
+      }
+
+      // Simulação de criptografia (Base64 como exemplo)
+      const textoCriptografado = btoa(texto);
+      resultContent.textContent = textoCriptografado;
+      
+      // Mostrar explicação do tipo selecionado
+      if (explicacoes[tipo]) {
+        explicacaoContent.textContent = explicacoes[tipo];
+        explicacao.classList.remove('hidden');
+      } else {
+        explicacao.classList.add('hidden');
+      }
+      
+      resultado.classList.remove('hidden');
+    }
+
+    btnCriptografar.addEventListener('click', criptografar);
+    verificarLogin();
+  </script>
+
+  <style>
+    .explicacao-cripto {
+      margin-top: 20px;
+      background-color: #001a33;
+      padding: 15px;
+      border-radius: 5px;
+      border-left: 4px solid #6699cc;
+    }
+
+    .explicacao-content {
+      margin-top: 10px;
+      font-size: 14px;
+      line-height: 1.5;
+      color: #cccccc;
+    }
+  </style>
+</body>
+</html>

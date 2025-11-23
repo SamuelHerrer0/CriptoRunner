@@ -1,0 +1,407 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+body {
+  background-color: #0a0a0a;
+  color: #ffffff;
+  min-height: 100vh;
+}
+
+header {
+  background-color: #001a33;
+  padding: 25px 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.logo h1 {
+  color: #6699cc;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.container {
+  padding: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #6699cc;
+  font-size: 24px;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+label {
+  font-size: 14px;
+  color: #cccccc;
+}
+
+textarea, select {
+  background-color: #000000;
+  border: 1px solid #003366;
+  border-radius: 5px;
+  color: #ffffff;
+  padding: 10px;
+  resize: none;
+  outline: none;
+  font-size: 14px;
+  width: 100%;
+}
+
+textarea {
+  height: 150px;
+  min-height: 150px;
+}
+
+button {
+  background-color: #003366;
+  color: #ffffff;
+  border: none;
+  border-radius: 5px;
+  padding: 12px;
+  cursor: pointer;
+  transition: 0.3s;
+  font-size: 16px;
+  width: 100%;
+}
+
+button:hover {
+  background-color: #004080;
+}
+
+.resultado {
+  margin-top: 20px;
+  background-color: #001a33;
+  padding: 15px;
+  border-radius: 5px;
+  font-size: 14px;
+  word-wrap: break-word;
+}
+
+.auth-message {
+  background-color: #001a33;
+  padding: 20px;
+  border-radius: 5px;
+  text-align: center;
+  margin-top: 20px;
+}
+
+.auth-buttons {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 15px;
+}
+
+.btn-home-action {
+  background-color: #003366;
+  padding: 10px 20px;
+  font-size: 14px;
+  width: auto;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #cccccc;
+  font-size: 14px;
+  position: absolute;
+  right: 15px;
+  top: 8px;
+}
+
+.user-avatar {
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  background-color: #003366;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 12px;
+}
+
+.hidden {
+  display: none;
+}
+
+.success-message {
+  color: #33cc66;
+  text-align: center;
+  margin-bottom: 15px;
+  font-size: 14px;
+}
+
+.error-message {
+  color: #cc3333;
+  text-align: center;
+  margin-bottom: 15px;
+  font-size: 14px;
+}
+
+.result-content {
+  padding: 10px;
+  background-color: #000000;
+  border-radius: 5px;
+  margin-top: 10px;
+  font-family: monospace;
+  font-size: 12px;
+  min-height: 100px;
+  overflow-y: auto;
+}
+
+.form-section {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.user-logout {
+  color: #6699cc;
+  cursor: pointer;
+  background: none;
+  border: none;
+  font-size: 12px;
+  padding: 2px 5px;
+  transition: color 0.3s;
+}
+
+.user-logout:hover {
+  color: #88bbee;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  position: absolute;
+  right: 15px;
+}
+
+.user-avatar {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #6699cc, #0066ff);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 24px;
+  color: #ffffff;
+  cursor: pointer;
+  border: 3px solid #6699cc;
+  object-fit: cover;
+  transition: all 0.3s;
+}
+
+.user-avatar:hover {
+  transform: scale(1.1);
+  border-color: #88bbee;
+  box-shadow: 0 0 15px rgba(102, 153, 204, 0.5);
+}
+
+.user-avatar img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.user-details {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.user-name {
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 16px;
+}
+
+#avatarInput {
+  display: none;
+}
+
+/* NOVAS CLASSES PARA EXPLICAÇÕES DE CRIPTOGRAFIA */
+.explicacao-cripto {
+  margin-top: 20px;
+  background-color: #001a33;
+  padding: 15px;
+  border-radius: 5px;
+  border-left: 4px solid #6699cc;
+}
+
+.explicacao-content {
+  margin-top: 10px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #cccccc;
+}
+
+/* RESPONSIVIDADE */
+@media (max-width: 768px) {
+  header {
+    padding: 15px 10px;
+  }
+
+  .logo h1 {
+    font-size: 16px;
+  }
+
+  .user-info {
+    position: relative;
+    right: auto;
+    flex-direction: column;
+    width: 100%;
+    justify-content: center;
+    margin-top: 15px;
+    gap: 10px;
+  }
+
+  .user-avatar {
+    width: 50px;
+    height: 50px;
+    font-size: 20px;
+  }
+
+  .user-name {
+    font-size: 14px;
+  }
+
+  .user-logout {
+    font-size: 11px;
+  }
+
+  .container {
+    padding: 15px;
+    max-width: 100%;
+  }
+
+  h2 {
+    font-size: 20px;
+    margin-bottom: 15px;
+  }
+
+  .form {
+    gap: 12px;
+  }
+
+  label {
+    font-size: 13px;
+  }
+
+  textarea, select {
+    padding: 8px;
+    font-size: 13px;
+  }
+
+  textarea {
+    height: 120px;
+    min-height: 120px;
+  }
+
+  button {
+    padding: 10px;
+    font-size: 14px;
+  }
+
+  .resultado {
+    margin-top: 15px;
+    padding: 12px;
+  }
+
+  .auth-message {
+    padding: 15px;
+    margin-top: 15px;
+  }
+
+  .auth-buttons {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .btn-home-action {
+    width: 100%;
+    padding: 10px 15px;
+  }
+
+  .result-content {
+    padding: 8px;
+    font-size: 11px;
+    min-height: 80px;
+  }
+
+  .explicacao-cripto {
+    margin-top: 15px;
+    padding: 12px;
+  }
+
+  .explicacao-content {
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 480px) {
+  .logo h1 {
+    font-size: 14px;
+  }
+
+  .user-avatar {
+    width: 40px;
+    height: 40px;
+    font-size: 18px;
+  }
+
+  .user-name {
+    font-size: 12px;
+  }
+
+  h2 {
+    font-size: 18px;
+  }
+
+  .container {
+    padding: 10px;
+  }
+
+  label {
+    font-size: 12px;
+  }
+
+  textarea {
+    height: 100px;
+    min-height: 100px;
+  }
+
+  .result-content {
+    min-height: 60px;
+    font-size: 10px;
+  }
+
+  .explicacao-cripto {
+    margin-top: 12px;
+    padding: 10px;
+  }
+
+  .explicacao-content {
+    font-size: 12px;
+  }
+}
